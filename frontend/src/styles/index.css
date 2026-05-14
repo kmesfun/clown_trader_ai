@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-circus-stripes text-circus-dark;
+    font-family: 'Oswald', sans-serif;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.05em;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-circus-cream border-3 border-circus-red rounded-lg p-4 shadow-circus;
+  }
+
+  .btn-primary {
+    @apply bg-circus-red text-white font-sub font-bold uppercase tracking-wider px-4 py-2 rounded
+           hover:bg-circus-red-dark transition-colors duration-150 shadow-circus cursor-pointer;
+  }
+
+  .btn-gold {
+    @apply bg-circus-gold text-circus-dark font-sub font-bold uppercase tracking-wider px-4 py-2 rounded
+           hover:bg-circus-gold-dark transition-colors duration-150 shadow-circus cursor-pointer;
+  }
+
+  .badge-gain {
+    @apply text-gain-green font-mono font-bold;
+  }
+
+  .badge-loss {
+    @apply text-loss-red font-mono font-bold;
+  }
+
+  .badge-neutral {
+    @apply text-circus-dark font-mono font-bold;
+  }
+
+  .ticker-chip {
+    @apply bg-circus-dark text-circus-gold font-mono font-bold text-sm px-2 py-0.5 rounded;
+  }
+
+  .direction-buy {
+    @apply bg-gain-green text-white text-xs font-bold uppercase px-2 py-0.5 rounded;
+  }
+
+  .direction-sell {
+    @apply bg-loss-red text-white text-xs font-bold uppercase px-2 py-0.5 rounded;
+  }
+
+  .direction-short {
+    @apply bg-clown-purple text-white text-xs font-bold uppercase px-2 py-0.5 rounded;
+  }
+
+  .direction-cover {
+    @apply bg-circus-gold text-circus-dark text-xs font-bold uppercase px-2 py-0.5 rounded;
+  }
+}
+
+@layer utilities {
+  .border-3 {
+    border-width: 3px;
+  }
+}
+
+/* Scrolling ticker animation */
+.ticker-wrap {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ticker-content {
+  display: inline-block;
+  animation: ticker 60s linear infinite;
+}
+
+@keyframes ticker {
+  0% { transform: translateX(100vw); }
+  100% { transform: translateX(-100%); }
+}
+
+/* Stripe background */
+.circus-bg {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 20px,
+    rgba(204, 31, 26, 0.04) 20px,
+    rgba(204, 31, 26, 0.04) 40px
+  );
+}
