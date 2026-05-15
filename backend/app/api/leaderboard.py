@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
-from app.models import Player, Portfolio
+from app.models import Player, Portfolio, Position
 
 router = APIRouter(prefix="/leaderboard", tags=["leaderboard"])
 
@@ -28,6 +28,8 @@ async def get_leaderboard(db: AsyncSession = Depends(get_db)):
         niit = max(0, short_gains + long_gains) * 0.038
         total_tax = short_tax + long_tax + niit
         after_tax_equity = equity - total_tax
+        position_result = await db.execute(select(Position).where(Position.player_id == player.id))
+        position_count = len(position_result.scalars().all())
 
         entries.append({
             "rank": rank,
@@ -38,12 +40,15 @@ async def get_leaderboard(db: AsyncSession = Depends(get_db)):
             "strategy_description": player.strategy_description,
             "avatar_emoji": player.avatar_emoji,
             "cash_balance": str(portfolio.cash_balance),
+            "settled_cash": str(portfolio.settled_cash),
             "total_equity": str(portfolio.total_equity),
             "total_return_pct": str(portfolio.total_return_pct),
             "unrealized_pnl": str(portfolio.unrealized_pnl),
             "realized_pnl": str(portfolio.realized_pnl),
+            "position_count": position_count,
             "after_tax_equity": round(after_tax_equity, 2),
             "after_tax_return_pct": round((after_tax_equity - 100_000) / 100_000 * 100, 4),
+            "pdt_locked": portfolio.pdt_locked_until is not None,
             "pdt_triggered": portfolio.pdt_triggered,
         })
 

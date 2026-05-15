@@ -15,12 +15,13 @@ export function CramerPicks() {
 
   const [form, setForm] = useState({
     parsed_ticker: '',
-    direction: 'buy' as 'buy' | 'sell' | 'hold',
+    direction: 'buy' as const,
     raw_text: '',
     source_url: '',
     confidence: 1.0,
   })
   const [submitting, setSubmitting] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
   const [executing, setExecuting] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,6 +35,19 @@ export function CramerPicks() {
       alert(`Error: ${err}`)
     } finally {
       setSubmitting(false)
+    }
+  }
+
+  const handleRefreshBuyCalls = async () => {
+    setRefreshing(true)
+    try {
+      const result = await api.refreshCramerBuyCalls() as { created: number; skipped: number; candidates: number }
+      alert(`Imported ${result.created} new buy calls (${result.skipped} already existed, ${result.candidates} candidates found).`)
+      await mutate()
+    } catch (err) {
+      alert(`Error: ${err}`)
+    } finally {
+      setRefreshing(false)
     }
   }
 
@@ -56,7 +70,17 @@ export function CramerPicks() {
 
       {/* Add pick form */}
       <div className="card">
-        <h2 className="font-carnival text-circus-dark text-2xl tracking-wider mb-4">ADD A CRAMER PICK</h2>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
+          <h2 className="font-carnival text-circus-dark text-2xl tracking-wider">CRAMER BUY CALLS</h2>
+          <button
+            type="button"
+            onClick={handleRefreshBuyCalls}
+            disabled={refreshing}
+            className="btn-gold text-xs"
+          >
+            {refreshing ? 'Scanning...' : 'Fetch Latest Buy Calls'}
+          </button>
+        </div>
         <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <label className="block text-xs font-sub font-bold uppercase tracking-wider text-circus-tent mb-1">
@@ -73,27 +97,21 @@ export function CramerPicks() {
           </div>
           <div>
             <label className="block text-xs font-sub font-bold uppercase tracking-wider text-circus-tent mb-1">
-              Direction *
+              Direction
             </label>
-            <select
-              value={form.direction}
-              onChange={(e) => setForm({ ...form, direction: e.target.value as 'buy' | 'sell' | 'hold' })}
-              className="w-full border-2 border-circus-red rounded px-3 py-2 font-sub bg-circus-cream focus:outline-none focus:border-circus-gold"
-            >
-              <option value="buy">BUY BUY BUY</option>
-              <option value="sell">SELL</option>
-              <option value="hold">HOLD</option>
-            </select>
+            <div className="w-full border-2 border-circus-red rounded px-3 py-2 font-sub bg-circus-cream text-circus-dark">
+              BUY BUY BUY
+            </div>
           </div>
           <div className="sm:col-span-2">
             <label className="block text-xs font-sub font-bold uppercase tracking-wider text-circus-tent mb-1">
-              Quote / Raw Text
+              What Cramer said
             </label>
             <input
               type="text"
               value={form.raw_text}
               onChange={(e) => setForm({ ...form, raw_text: e.target.value })}
-              placeholder="I like this stock! Buy buy buy!"
+              placeholder="Cramer said this one is a buy..."
               className="w-full border-2 border-circus-red rounded px-3 py-2 font-sub bg-circus-cream focus:outline-none focus:border-circus-gold"
             />
           </div>
