@@ -45,10 +45,9 @@ export function TaxReport() {
                   </tr>
                 </thead>
                 <tbody>
-                  {leaderboard?.map((entry, i) => {
+                  {leaderboard?.map((entry) => {
                     const preTaxReturn = parseFloat(entry.total_return_pct)
                     const afterTaxReturn = entry.after_tax_return_pct
-                    const rankDelta = 0
 
                     return (
                       <tr key={entry.player_id} className="border-b border-circus-gold/20 hover:bg-circus-gold/5">

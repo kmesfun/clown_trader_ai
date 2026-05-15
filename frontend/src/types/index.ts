@@ -15,10 +15,24 @@ export interface Player {
   pdt_locked: boolean
 }
 
-export interface LeaderboardEntry extends Player {
+export interface LeaderboardEntry {
   rank: number
+  player_id: string
+  name: string
+  slug: string
+  type: 'clown' | 'bot'
+  strategy_description: string
+  avatar_emoji: string
+  cash_balance: string
+  settled_cash: string
+  total_equity: string
+  unrealized_pnl: string
+  realized_pnl: string
+  total_return_pct: string
+  position_count: number
   after_tax_equity: number
   after_tax_return_pct: number
+  pdt_locked: boolean
   pdt_triggered: boolean
 }
 

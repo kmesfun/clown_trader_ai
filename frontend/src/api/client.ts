@@ -21,6 +21,8 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     }),
+  refreshCramerBuyCalls: () =>
+    req('/cramer-picks/refresh-buy-calls', { method: 'POST' }),
   executeCramerPick: (id: string) =>
     req(`/cramer-picks/${id}/execute`, { method: 'POST' }),
   getMarketStatus: () => req('/market/status'),
